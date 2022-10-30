@@ -57,6 +57,7 @@ $contacts = $statement->fetchAll(PDO::FETCH_ASSOC);
                 <td><?php echo $contact['email'] ?></td>
                 <td><?php echo $contact['phone_number'] ?></td>
                 <td>
+                    <a href="view.php?id=<?php echo $contact['id'] ?>" type="button" class="btn btn-sm btn-warning">view</a>
                     <a href="update.php?id=<?php echo $contact['id'] ?>" type="button" class="btn btn-sm btn-primary">Edit</a>
 
                     <form method="post" action="delete.php" style="display:inline-block">
@@ -65,7 +66,6 @@ $contacts = $statement->fetchAll(PDO::FETCH_ASSOC);
                     </form>
                 </td>
             </tr>
-            https://raymondMudibo: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@github.com/raymondMudibo/phonebook.gitgit 
         <?php } ?>
     </tbody>
 </table>

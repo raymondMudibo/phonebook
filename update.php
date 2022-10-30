@@ -11,11 +11,6 @@ $statement->bindValue(':id', $id);
 $statement->execute();
 $contact = $statement->fetch(PDO::FETCH_ASSOC);
 
-// echo "<pre>";
-// var_dump($contact['image']);
-// echo "</pre>";
-// exit;
-
 $error = [];
 
 $first_name = $contact['first_name'];
