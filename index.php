@@ -1,6 +1,14 @@
 <?php include './configuration/database.php';
 
-$statement = $pdo->prepare('SELECT * FROM contacts ORDER BY created_at DESC');
+$search = $_GET['search'] ?? '';
+if ($search) {
+    $statement = $pdo->prepare('SELECT * FROM contacts WHERE first_name LIKE :search OR last_name LIKE :search 
+                                    OR email LIKE :search OR phone_number LIKE :search ORDER BY created_at DESC');
+    $statement->bindValue(':search', "%$search%");
+} else {
+
+    $statement = $pdo->prepare('SELECT * FROM contacts ORDER BY created_at DESC');
+}
 $statement->execute();
 $contacts = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -13,6 +21,16 @@ $contacts = $statement->fetchAll(PDO::FETCH_ASSOC);
 <p>
     <a class="btn btn-success" href="create.php">Create Contact</a>
 </p>
+<form>
+    <div class="input-group mb-3 row ">
+        <div class="col-md-4 d-flex justify-content-end">
+            <input type="text" class="form-control" placeholder="Search For Contacts" name="search" value="<?php echo $search ?>">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </div>
+        </div>
+    </div>
+</form>
 
 <table class="table">
     <thead>
@@ -39,10 +57,10 @@ $contacts = $statement->fetchAll(PDO::FETCH_ASSOC);
                 <td><?php echo $contact['email'] ?></td>
                 <td><?php echo $contact['phone_number'] ?></td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-primary">Edit</button>
+                    <a href="update.php?id=<?php echo $contact['id'] ?>" type="button" class="btn btn-sm btn-primary">Edit</a>
 
                     <form method="post" action="delete.php" style="display:inline-block">
-                        <input type="hidden" name="cid" value="<?php echo $contact['id'] ?>">
+                        <input type="hidden" name="id" value="<?php echo $contact['id'] ?>">
                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
                 </td>

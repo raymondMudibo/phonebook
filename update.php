@@ -1,19 +1,34 @@
-<?php $pdo = require './configuration/database.php';
+<?php include './configuration/database.php';
 
+$id = $_GET['id'] ?? null;
+if (!$id) {
+    header("Location: index.php");
+    exit;
+}
+
+$statement = $pdo->prepare("SELECT * FROM contacts WHERE id = :id");
+$statement->bindValue(':id', $id);
+$statement->execute();
+$contact = $statement->fetch(PDO::FETCH_ASSOC);
+
+// echo "<pre>";
+// var_dump($contact['image']);
+// echo "</pre>";
+// exit;
 
 $error = [];
 
-$first_name = '';
-$last_name = '';
-$email = '';
-$phone = '';
+$first_name = $contact['first_name'];
+$last_name = $contact['last_name'];
+$email = $contact['email'];
+$phone = $contact['phone_number'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
-    $created_at = date('Y-m-d H:i:s');
+
 
 
 
@@ -34,20 +49,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (empty($errors)) {
         $image = $_FILES['image'] ?? null;
-        $imagePath = '';
+        $imagePath = $contact['image'];
+
+       
         if ($image && $image['tmp_name']) {
+            if ($contact['image']) {
+                unlink($product['image']);
+            }
+    
             $imagePath = 'images/' . randomString(8) . '/' . $image['name'];
             mkdir(dirname($imagePath));
             move_uploaded_file($image['tmp_name'], $imagePath);
         }
-        $statement = $pdo->prepare("INSERT INTO contacts(image, first_name, last_name, phone_number, email, created_at) 
-                                    VALUES(:image,:first_name, :last_name, :phone, :email,  :created_at)");
+        $statement = $pdo->prepare("UPDATE contacts 
+                                    SET image = :image, first_name = :first_name, last_name = :last_name, 
+                                    phone_number = :phone, email = :email
+                                    WHERE  id = :id ");
         $statement->bindValue(':image', $imagePath);
         $statement->bindValue(':first_name', $first_name);
         $statement->bindValue(':last_name', $last_name);
         $statement->bindValue(':email', $email);
         $statement->bindValue(':phone', $phone);
-        $statement->bindValue(':created_at', $created_at);
+        $statement->bindValue(':id', $id);
         $statement->execute();
         header('Location: index.php');
         exit;
@@ -68,7 +91,8 @@ function randomString($number)
 ?>
 <?php require './partials/header.php' ?>
 
-<h1>Create New Contact</h1>
+
+<h1>Edit <strong><em><?php echo $contact['first_name'] . ' ' . $contact['last_name'] ?></em></strong> Details</h1>
 
 <?php if (!empty($errors)) { ?>
     <div class="alert alert-danger">
@@ -80,7 +104,11 @@ function randomString($number)
     </div>
 <?php } ?>
 
-<form action="create.php" method="post" enctype="multipart/form-data">
+<form action=" " method="post" enctype="multipart/form-data">
+
+    <?php if ($contact['image']) { ?>
+        <img src="<?php echo $contact['image'] ?>" width="100">
+    <?php } ?>
 
     <div class="mb-3 form-group">
         <label for="image" class="form-label">Contact Image</label>
@@ -88,6 +116,7 @@ function randomString($number)
             <input type="file" id="image" name="image">
         </div>
     </div>
+
     <div class="mb-3 form-group">
         <label for="first_name" class="form-label">First Name</label>
         <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo $first_name ?>">

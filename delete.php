@@ -1,6 +1,6 @@
 <?php
 include './configuration/database.php';
-$id = $_POST['cid'] ?? null;
+$id = $_POST['id'] ?? null;
 
 
 //  echo "<pre>";
