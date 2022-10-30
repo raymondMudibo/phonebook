@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $image = $_FILES['image'] ?? null;
         $imagePath = '';
-        if ($image && $image[tmp_name]) {
+        if ($image && $image['tmp_name']) {
             $imagePath = 'images/' . randomString(8) . '/' . $image['name'];
             mkdir(dirname($imagePath));
             move_uploaded_file($image['tmp_name'], $imagePath);
@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':created_at', $created_at);
         $statement->execute();
         //header('Location : index.php');
-
     }
 }
 

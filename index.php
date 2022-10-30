@@ -1,6 +1,6 @@
-<?php $pdo = require './configuration/database.php';
+<?php include './configuration/database.php';
 
-$statement = $pdo->prepare('SELECT * FROM contacts');
+$statement = $pdo->prepare('SELECT * FROM contacts ORDER BY created_at DESC');
 $statement->execute();
 $contacts = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -13,7 +13,7 @@ $contacts = $statement->fetchAll(PDO::FETCH_ASSOC);
 <p>
     <a class="btn btn-success" href="create.php">Create Contact</a>
 </p>
-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
+
 <table class="table">
     <thead>
         <tr>
@@ -27,10 +27,10 @@ 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
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($contacts as $contact) { ?>
+        <?php foreach ($contacts as $i => $contact) { ?>
 
             <tr>
-                <th scope="row"><?php echo $contact['id'] ?></th>
+                <th scope="row"><?php echo $i + 1 ?></th>
                 <td>
                     <img src="<?php echo $contact['image'] ?>" height="50" width="50" />
                 </td>
@@ -40,7 +40,11 @@ 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
                 <td><?php echo $contact['phone_number'] ?></td>
                 <td>
                     <button type="button" class="btn btn-sm btn-primary">Edit</button>
-                    <button type="button" class="btn btn-sm btn-danger">Delete</button>
+
+                    <form method="post" action="delete.php" style="display:inline-block">
+                        <input type="hidden" name="cid" value="<?php echo $contact['id'] ?>">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
                 </td>
             </tr>
 
