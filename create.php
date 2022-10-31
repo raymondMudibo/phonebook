@@ -110,7 +110,7 @@ function randomString($number)
     <button type="submit" class="btn btn-primary mb-3">Submit</button>
 
     <div class="mt-2 d-flex justify-content-end">
-        <a href="index.php">Back to All Contacts</a>
+        <a href="index.php" class="btn btn-secondary">Back to All Contacts</a>
     </div>
 </form>
 <?php require './partials/footer.php' ?>

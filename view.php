@@ -24,7 +24,7 @@ $image = $contact['image'];
     <div class="card" style="width: 18rem;">
         <div class="row">
             <?php if ($contact['image']) { ?>
-                <img src="<?php echo $contact['image'] ?>" width="100">
+                <img src="<?php echo $contact['image'] ?>" width="100" height="200">
             <?php } ?>
         </div>
         <div class="card-body">
